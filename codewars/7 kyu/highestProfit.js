@@ -17,6 +17,10 @@ function minMax(arr) {
     return [arr[0], arr[arr.length - 1]]; 
 }
 
+function minMax2(arr) {
+    return [Math.min(...arr), Math.max(...arr)];
+}
+
 console.log(minMax([1, 2, 3, 4, 5]));
 console.log(minMax([2334454, 5]));
 console.log(minMax([1]));
