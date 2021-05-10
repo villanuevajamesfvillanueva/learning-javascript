@@ -36,16 +36,47 @@ function sumStrings(a,b) {
         for (let i = 0; i < lenSum; i++) {
             digitsA[i] = parseInt(digitsA[i]);
             digitsB[i] = parseInt(digitsB[i]);
-            sum[i] = (digitsA[i] + digitsB[i]) * 10**(i);
+            sum[i] = digitsA[i] + digitsB[i];
+            sum[i] = sum[i].toString().split('').reverse();
+            if (sum[i].length === 1) { 
+                sum[i][0] = sum[i].toString();
+                sum[i][1] = '0';
+            }
         }
-        var result = sum.reduce((total, currentVal) => (total + currentVal), 0);
 
-        console.log(digitsA, digitsB, sum, result)
+        var result = [];
+        result[0] = sum[0][0] || sum[0][1];
+        for (let i = 0; i < lenSum - 1; i++) {
+            result.push((parseInt(sum[i][1]) + parseInt(sum[i+1][0])).toString());
+        }
+
+        for (let i = 0; i < result.length; i++) {
+            if (result[i].length > 1) {
+                result[i] = result[i].split('').reverse().join('');
+                for (let j = i+1; j < result.length; j++) {
+                    result[j] = `${result[j]}0`;
+                }
+                break;
+            }
+            // result[i] = (parseInt(result[i][1]) + parseInt(result[i+1][0])).toString();
+        }
+
+        console.log(digitsA, digitsB, sum)
+        console.log(result);
     // }
-    
-
 }
 
-console.log(sumStrings('123', '456'));
-console.log(sumStrings('9999', '999'));
-console.log(sumStrings('9999999', '999'));
+// function reduceDigits(arr, index) {
+    
+//     for (let i = index, len = arr.length; i < len; i++) {
+//         if (arr[i].length === 1) arr[i] = [arr[i], 0];
+//         arr[index] = arr[index].split('').reverse();
+//     }
+    
+    
+//     return arr
+// }
+
+// console.log(sumStrings('123', '456'));
+// console.log(sumStrings('9999', '999'));
+console.log(sumStrings('999999', '999'));
