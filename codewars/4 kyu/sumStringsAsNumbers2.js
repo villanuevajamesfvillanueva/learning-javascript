@@ -50,15 +50,21 @@ function sumStrings(a,b) {
             result.push((parseInt(sum[i][1]) + parseInt(sum[i+1][0])).toString());
         }
 
-        for (let i = 0; i < result.length; i++) {
-            if (result[i].length > 1) {
-                result[i] = result[i].split('').reverse().join('');
-                for (let j = i+1; j < result.length; j++) {
-                    result[j] = `${result[j]}0`;
+
+        var reduced = false;
+        while(!reduced) {
+            for (let i = 0; i < result.length; i++) {
+                if (result[i].length > 1) {
+                    reduced = false;
+                    result[i] = result[i].split('').reverse().join('');
+                    for (let j = i+1; j < result.length; j++) {
+                        result[j] = `${result[j]}0`;
+                    }
+                    result[i] = (parseInt(result[i][1]) + parseInt(result[i+1][0])).toString()
+                    break;
                 }
-                break;
+                reduced = true;
             }
-            // result[i] = (parseInt(result[i][1]) + parseInt(result[i+1][0])).toString();
         }
 
         console.log(digitsA, digitsB, sum)
