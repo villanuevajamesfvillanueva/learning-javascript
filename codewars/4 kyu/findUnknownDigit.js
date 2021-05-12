@@ -16,7 +16,16 @@ function solveExpression(exp) {
     const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     const operations = ['+', '-', '*'];
 
-    var splitUp = exp.split(/([+*=-])/g);
+    
+    const patt = /-?[\d?]+|[^=]/g;
+    const patt2 = /(-?[0-9?]+)([-+*\/])(-?[0-9?]+)=(-?[0-9?]+)/gm;
+
+    // var splitUp = exp.split(/([+*=-])/g);
+    var splitUp = exp.match(patt);
+
+
+
+    //---------------------------------------
     splitUp = splitUp.filter(e => e);
     var len = splitUp.length;
     var num1, op, num2, ans;
