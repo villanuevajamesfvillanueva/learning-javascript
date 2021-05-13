@@ -12,29 +12,63 @@
 // Complete the method to solve the expression to find the value of the unknown rune. The method takes a string as a paramater repressenting the expression and will return an int value representing the unknown rune or -1 if no such rune exists.
 
 
+
+
 function solveExpression(exp) {
-    const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const operations = ['+', '-', '*'];
+    const patt = /-?[\d?]+|[^=]/g;
+  
+    var splitUp = exp.match(patt);
+    if (splitUp.length < 4) {
+        splitUp.splice(1, 0, '-');
+        splitUp[2] = splitUp[2].substring(1);
+    }
+    var digits = '';
+    var operations = ['+', '-', '*'], operation;
 
-    var splitUp = exp.split(/([+*=-])/g);
-    splitUp = splitUp.filter(e => e);
-    var len = splitUp.length;
-    var num1, op, num2, ans;
-    var num1Neg, num2Neg, ansNeg;
+    console.log(splitUp)
 
-    if (len === 8) {
-        num1Neg, num2Neg, ansNeg = true;
+    for (let i = 0; i < 4; i++) {
+        if (i === 1) {
+            operation = operations.indexOf(splitUp[i])
+            continue;
+        }
+        console.log(splitUp[i])
+        digits += splitUp[i].replace(/\D/g, '');
+    }
+    var digitsArr = [...new Set(digits)].map(x => +x);
+
+    var solns = [];
+    for (let i = 0; i < 10; i++) {
+        if (digitsArr.includes(i)) continue;
+    
+        if (i === 0 &&
+            ((splitUp[0].length > 1 && splitUp[0][0] === '?') ||
+            (splitUp[2].length > 1 && splitUp[2][0] === '?') ||
+            (splitUp[3].length > 1 && splitUp[3][0] === '?'))) continue;
+
+        if (i === 0 &&
+            ((splitUp[0].length > 1 && splitUp[0][1] === '?' && splitUp[0][0] === '-') ||
+            (splitUp[2].length > 1 && splitUp[2][1] === '?' && splitUp[2][0] === '-') ||
+            (splitUp[3].length > 1 && splitUp[3][1] === '?' && splitUp[3][0] === '-'))) continue;
+
+        var num1 = parseInt(splitUp[0].replace(/\?/g, i));
+        var num2 = parseInt(splitUp[2].replace(/\?/g, i));
+        var num3 = parseInt(splitUp[3].replace(/\?/g, i));
+        console.log(num1, num2, num3, 'index: ', i);
+        
+        if (operation === 0 && num1 + num2 === num3) solns.push(i);
+        if (operation === 1 && num1 - num2 === num3) solns.push(i);
+        if (operation === 2 && num1 * num2 === num3) solns.push(i);
     }
 
-    if (splitUp.indexOf('=') === len - 3) ansNeg = true;
-    else ansNeg = false;
-
-
-    console.log(splitUp, splitUp.length);
-    
-    // console.log(num1, op, num2, '=', ans)
-    // return splitUp.length;
+    console.log(solns);
+    if (solns.length > 0) return [...new Set(solns)][0];
+    else return -1;
 }
+
+
+
+
 
 var data = [
     ['1+1=?', 2],
@@ -47,25 +81,12 @@ var data = [
     ['??*??=302?', 5],
     ['?*11=??', 2],
     ['??*1=??', 2],
-    ['??+??=??', -1]];
+    ['??+??=??', -1],
+    ['?33438-103326=410112'],
+    ['123?45+?=123?45']];
 
 data.forEach(arr => {
     console.log(solveExpression(arr[0]));
 });
 
-//APPROACH:  compare length and positions of components
 
-
-//max length = 8
-    //if indexOf('=') === .length - 3 ---> negative ans
-        //ans = parseInt(splitUp[splitUp.length - 1]) * -1;
-    //if indexOf('=') === .length - 2 ---> positive ans
-        //ans = parseInt(splitUp[splitUp.length - 1]);
-
-    //if indexOf('+')
-
-    //if indexOf('*')
-
-    //find all occurences of '-'
-        //
-        //if indexOf('+')
