@@ -6,46 +6,42 @@
 // A string representation of an integer will contain no characters besides the ten numerals "0" to "9".
 
 function sumStrings(a,b) {
-    // if (a.length <= 16 && b.length <= 16) {
-    //     if (!a) a = 0;
-    //     if (!b) b = 0;
-    //     var sum = parseInt(a) + parseInt(b);
-    //     return sum.toString();
-    // }
+    var lenA = a.length, lenB = b.length;
+    var digitsA = a.split('').reverse();
+    var digitsB = b.split('').reverse();
+    var maxLen = Math.max(lenA, lenB) + 1;
+     
+    for (let i = 0; i < maxLen; i++) {
+        if (!digitsA[i]) digitsA[i] = '0';
+        if (!digitsB[i]) digitsB[i] = '0';
+    }
 
-    // else {
-        var lenA = a.length;
-        var lenB = b.length;
-        var digitsA = a.split('').reverse();
-        var digitsB = b.split('').reverse();
+    var carryOver = 0, colSum = 0, sum = '';
+    for (let i = 0; i < maxLen; i++) {
+        colSum = parseInt(digitsA[i]) + parseInt(digitsB[i]) + carryOver;
+        colSum = colSum.toString();
         
-        
-        if (lenA > lenB) {
-            for (let i = lenB; i < lenA; i++) {
-                digitsB[i] = 0
-            }
-        }
-        if (lenA < lenB) {
-            for (let i = lenA; i < lenB; i++) {
-                digitsA[i] = 0
-            }
+        if (colSum.length > 1) {
+            sum += colSum[1];
+            carryOver = parseInt(colSum[0]);
         }
 
-        var lenSum = Math.max(lenA, lenB);
-        var sum = [];
-        for (let i = 0; i < lenSum; i++) {
-            digitsA[i] = parseInt(digitsA[i]);
-            digitsB[i] = parseInt(digitsB[i]);
-            sum[i] = (digitsA[i] + digitsB[i]) * 10**(i);
-        }
-        var result = sum.reduce((total, currentVal) => (total + currentVal), 0);
+        else {
+            sum += colSum[0];
+            carryOver = 0;
+        } 
+    }
 
-        console.log(digitsA, digitsB, sum, result)
-    // }
-    
+    sum = sum.split('').reverse();
+    if (sum[0] === '0') {
+        let i = 0;
+        while (sum[i] === '0') i++;
+        sum.splice(0, i);
+    }
 
+    return sum.join('')
 }
 
-console.log(sumStrings('123', '456'));
-console.log(sumStrings('9999', '999'));
-console.log(sumStrings('9999999', '999'));
+console.log(sumStrings('8797', '45'));
+console.log(sumStrings('712569312664357328695151392', '8100824045303269669937'))
+console.log(sumStrings('00103', '08567'));
