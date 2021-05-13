@@ -19,31 +19,49 @@ const {performance } = require('perf_hooks');
 
 
 function nextBigger(n) {
-    var digits = n.toString().split('');
-    var permArr = [],
-    usedChars = [];
-    function permute(input) {
-        var i, ch;
-        for (i = 0; i < input.length; i++) {
-            ch = input.splice(i, 1)[0];
-            usedChars.push(ch);
-            if (input.length == 0) permArr.push(parseInt(usedChars.slice().join('')));
-            permute(input);
-            input.splice(i, 0, ch);
-            usedChars.pop();
-        }
-        return [...new Set(permArr.sort((a,b) => (a - b)))];
-    }
+    var digits = n.toString().split('').map(x => +x);
+    var len = digits.length;
 
-    var perm =  permute(digits);
-    return perm[perm.indexOf(n)+1];
+    for (var i = len - 1; i >= 0; i--) {
+        if (digits[i] > digits[i - 1]) break;
+    }
+     
+    if (i == 1 && digits[i] <= digits[i - 1]) return -1;
+    
+    let x = digits[i - 1], smallest = i;
+     
+    for (let j = i + 1; j < len; j++) {
+        if (digits[j] > x && digits[j] < digits[smallest]) smallest = j;
+    }
+     
+    let temp = digits[smallest];
+    digits[smallest] = digits[i - 1];
+    digits[i - 1] = temp;
+     
+    x = 0;
+    for(let j = 0; j < i; j++) {
+        x = x * 10 + digits[j];
+    }
+        
+    digits = digits.slice(i, digits.length + 1);
+    digits.sort();
+
+    for (let j = 0; j < len - i; j++) {
+        x = x * 10 + digits[j];
+    }
+    if (Number.isNaN(x)) return -1;
+    return x;
 }
 
-// console.log(nextBigger(12));
-// console.log(nextBigger(513));
-// console.log(nextBigger(2017));
-// console.log(nextBigger(414));
-// console.log(nextBigger(144));
+console.log(nextBigger(12));
+console.log(nextBigger(513));
+console.log(nextBigger(2017));
+console.log(nextBigger(414));
+console.log(nextBigger(144));
+console.log(nextBigger(111));
+console.log(nextBigger(391234579));
+console.log(nextBigger(71223048));
+console.log(nextBigger(391234579));
 
 
 // var t0 = performance.now()
@@ -52,6 +70,6 @@ function nextBigger(n) {
 // console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
 
 var t0 = performance.now()
-console.log(nextBigger(59884832));
+console.log(nextBigger(534976));
 var t1 = performance.now()
 console.log("execution took " + (t1 - t0) + " milliseconds.")
