@@ -17,57 +17,54 @@
 function solveExpression(exp) {
     const patt = /-?[\d?]+|[^=]/g;
   
-      var splitUp = exp.match(patt);
-      if (splitUp.length < 4) {
-          splitUp.splice(1, 0, '-');
-          splitUp[2] = splitUp[2].substring(1);
-      }
-      var digits = '';
-      var operations = ['+', '-', '*'], operation;
-  
-      console.log(splitUp)
-    
-      for (let i = 0; i < 4; i++) {
-          if (i === 1) {
-              operation = operations.indexOf(splitUp[i])
-              continue;
-          }
-          console.log(splitUp[i])
-          digits += splitUp[i].replace(/\D/g, '');
-          if (splitUp[i].length < 2) singleDigit = true;
-      }
-      var digitsArr = [...new Set(digits)].map(x => +x);
-      console.log('singleDigit: ', singleDigit);
-  
-        for (let i = 0; i < 10; i++) {
-            if (digitsArr.includes(i)) continue;
+    var splitUp = exp.match(patt);
+    if (splitUp.length < 4) {
+        splitUp.splice(1, 0, '-');
+        splitUp[2] = splitUp[2].substring(1);
+    }
+    var digits = '';
+    var operations = ['+', '-', '*'], operation;
 
-            //skipping zero if at least 1 number has '?' at the front
-            if ((splitUp[0].length > 1 || splitUp[2].length > 1 || splitUp[3].length > 1)
-                && (splitUp[0][0] === '?' || splitUp[2][0] === '?' || splitUp[3][0] === '?')
-                && i === 0) {
-                console.log((splitUp[0].length > 1 || splitUp[2].length > 1 || splitUp[3].length > 1));
-                console.log((splitUp[0][0] === '?' || splitUp[2][0] === '?' || splitUp[3][0] === '?'));
-                console.log(i === 0);
-                console.log(((splitUp[0].length > 1 || splitUp[2].length > 1 || splitUp[3].length > 1)
-                && (splitUp[0][0] === '?' || splitUp[2][0] === '?' || splitUp[3][0] === '?')
-                && i === 0));
-                continue;
-            }
-            
+    console.log(splitUp)
 
-            
-            var num1 = parseInt(splitUp[0].replace(/\?/g, i));
-            var num2 = parseInt(splitUp[2].replace(/\?/g, i));
-            var num3 = parseInt(splitUp[3].replace(/\?/g, i));
-            console.log(num1, num2, num3, 'index: ', i);
-
-            if (operation === 0 && num1 + num2 === num3) return i;
-            if (operation === 1 && num1 - num2 === num3) return i;
-            if (operation === 2 && num1 * num2 === num3) return i;
+    for (let i = 0; i < 4; i++) {
+        if (i === 1) {
+            operation = operations.indexOf(splitUp[i])
+            continue;
         }
-        return -1;
-  }
+        console.log(splitUp[i])
+        digits += splitUp[i].replace(/\D/g, '');
+    }
+    var digitsArr = [...new Set(digits)].map(x => +x);
+
+    var solns = [];
+    for (let i = 0; i < 10; i++) {
+        if (digitsArr.includes(i)) continue;
+    
+        if (i === 0 &&
+            ((splitUp[0].length > 1 && splitUp[0][0] === '?') ||
+            (splitUp[2].length > 1 && splitUp[2][0] === '?') ||
+            (splitUp[3].length > 1 && splitUp[3][0] === '?'))) continue;
+
+        if (i === 0 &&
+            ((splitUp[0].length > 1 && splitUp[0][1] === '?' && splitUp[0][0] === '-') ||
+            (splitUp[2].length > 1 && splitUp[2][1] === '?' && splitUp[2][0] === '-') ||
+            (splitUp[3].length > 1 && splitUp[3][1] === '?' && splitUp[3][0] === '-'))) continue;
+
+        var num1 = parseInt(splitUp[0].replace(/\?/g, i));
+        var num2 = parseInt(splitUp[2].replace(/\?/g, i));
+        var num3 = parseInt(splitUp[3].replace(/\?/g, i));
+        console.log(num1, num2, num3, 'index: ', i);
+        
+        if (operation === 0 && num1 + num2 === num3) solns.push(i);
+        if (operation === 1 && num1 - num2 === num3) solns.push(i);
+        if (operation === 2 && num1 * num2 === num3) solns.push(i);
+    }
+
+    console.log(solns);
+    if (solns.length > 0) return [...new Set(solns)][0];
+    else return -1;
+}
 
 
 
@@ -88,14 +85,8 @@ var data = [
     ['?33438-103326=410112'],
     ['123?45+?=123?45']];
 
-// data.forEach(arr => {
-//     console.log(solveExpression(arr[0]));
-// });
+data.forEach(arr => {
+    console.log(solveExpression(arr[0]));
+});
 
-console.log(solveExpression(data[1][0]))
-// console.log(solveExpression(data[3][0]))
-// console.log(solveExpression(data[8][0]))
-// console.log(solveExpression(data[9][0]))
-// console.log(solveExpression(data[6][0]))
-// console.log(solveExpression(data[11][0]))
 
