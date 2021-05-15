@@ -13,20 +13,50 @@
 
 
 const data = ['(x+1)^2', '(p-1)^3', '(2f+4)^6', '(-2a-4)^0', '(-12t+43)^2',
-    '(r+0)^20', '(-x-1)^2', '(x+y)^6', '(a-x)^5'];
+    '(r+0)^203', '(-x-1)^2', '(x+y)^6', '(a-x)^5'];
 
 function expand(expr) {
     const patt = /(-?[a-zA-Z0-9]+)/g;
     var arr = expr.match(patt);
-    //guard clause for if one term of binomial is zero
-    var terms = [];
     console.log(arr);
-    
+    if (arr[0] === '0') return `${arr[1]}^${arr[2]}`;
+    if (arr[1] === '0') return `${arr[0]}^${arr[2]}`;
+
+    var terms = [];
     for (let i = 0; i <= arr[2]; i++) {
-        var binExpTerms = [comb(arr[2], i), exp(arr[0], arr[2]-i), exp(arr[1], i)];
+        var c = comb(arr[2], i);
+        var a = exp(arr[0], arr[2]-i);
+        var b = exp(arr[1], i);
+        var aCoeff = 1; bCoeff = 1;
+        if (a[0] === '-') {
+            aCoeff = -1;
+            a = a.substring(1);
+        }
+
+        if (b[0] === '1') {
+            aCoeff = 1;
+            a = a.substring(1);
+        }
+
+        if (b[0] === '-') {
+            bCoeff = -1;
+            b = b.substring(1);
+        }
+
+        if (b[0] === '1') {
+            bCoeff = 1;
+            b = b.substring(1);
+        }
+        c = c*aCoeff*bCoeff;
+        if (c <= 1) c = '';
+        var binExpTerms = [c, a, b];
+        //negative coeffs not being properly accounted for
+        //an exponent of 1 on a variable should not be displayed
+        
         terms.push(binExpTerms.join(''))
     }
-    return terms;
+    console.log(terms);
+    return terms.join('+');
     
 }
 
@@ -47,6 +77,7 @@ function exp(term, e) {
     var coeff = '', variables = '';
     const matches = term.match(/(-?[0-9]*)([a-zA-Z]*)/);
     var arr = [convertNumMatch(matches[1]), matches[2]];
+    // var arr = extractCoeffs(term);
 
     
     if (e > 0) {
@@ -55,8 +86,6 @@ function exp(term, e) {
         coeff = parseInt(arr[0])**e;
         if (coeff === 1) coeff = '';
     }
-    
-    // console.log(`${parseInt(arr[0])**e}${variables}`);
     return `${coeff}${variables}`;
 }
 
@@ -65,6 +94,12 @@ function convertNumMatch(numMatch) {
     else if (numMatch === '-') return '-1';
     else return numMatch;
 }
+
+// function extractCoeffs(exp) {
+//     const matches = exp.match(/(-?[0-9]*)([a-zA-Z]*)/);
+//     var arr = [convertNumMatch(matches[1]), matches[2]];
+//     return arr;
+// }
 
 
 data.forEach(i => {
