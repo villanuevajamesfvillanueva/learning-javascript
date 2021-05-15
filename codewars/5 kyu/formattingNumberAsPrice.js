@@ -15,16 +15,13 @@ var numberToPrice = function(number) {
     number = number.toString();
     if (!number.match("^([.,]|-?[0-9?]+)+$")) return 'NaN';
     number = number.split('');
-
     var decIndex = number.indexOf('.');
     
-
     if (decIndex > -1) {
         const patt = /[^0-9]/g;
         for (let i = decIndex + 1; i < number.length; i++) {
             if (patt.test(number[i])) return 'NaN';
         }
-
         for (let i = decIndex + 1; i <= decIndex + 2; i++) {
             if (!number[i]) number[i] = '0';
         }
@@ -36,8 +33,6 @@ var numberToPrice = function(number) {
         number.push('0');
         number.push('0'); 
     }
-    
-
     
     return applyCommas(number);
 }
